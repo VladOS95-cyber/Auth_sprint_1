@@ -1,0 +1,201 @@
+openapi: 3.0.2
+
+info:
+  title: 'Authentication service'
+  version: '1.0'
+
+paths:
+  /auth/login:
+  /auth/register:
+  /auth/logout:
+  /auth/refresh-token:
+  /auth/change-password:
+  /personal-data/<uuid:user_id>:
+  /login-history/<uuid:user_id>:
+  /role:
+  /role/<uuid:role_id>:
+  /assign-roles:
+  /check-permissions:
+
+components:
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example:
+            status: error
+            message: resource not found
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          examples:
+            expired:
+              value:
+                status: error
+                message: token expired
+            notvalid:
+              value:
+                status: error
+                message: token is not valid
+    Forbidden:
+      description: Access is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+          example:
+            status: error
+            message: permission denied
+  schemas:
+    Credentials:
+      title: Credentials
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+      required:
+        - username
+        - password
+    Passwords:
+      title: Passwords
+      type: object
+      properties:
+        old_password:
+          type: string
+          writeOnly: true
+        new_password:
+          type: string
+          writeOnly: true
+      required:
+        - username
+        - password
+    Token:
+      title: Token
+      type: object
+      properties:
+        access_token:
+          type: string
+          title: access token
+        refresh_token:
+          type: string
+          title: refresh token
+    Response:
+      title: Response
+      type: object
+      properties:
+        status:
+          type: string
+          title: response status
+        message:
+          type: string
+          title: response message
+    UserData:
+      title: UserData
+      type: object
+      properties:
+        first_name:
+          type: string
+          title: first name
+        last_name:
+          type: string
+          title: last name
+        email:
+          type: string
+          title: email
+        birth_date:
+          type: string
+          title: birth date
+        phone:
+          type: string
+          title: phone
+        city:
+          type: string
+          title: city
+    UserDevice:
+      title: UserDevice
+      type: object
+      properties:
+        ip:
+          type: string
+          title: ip address
+        user_agent:
+          type: string
+          title: browser user-agent
+        created_at:
+          type: string
+          title: created date
+    UserLogin:
+      title: UserLogin
+      type: object
+      properties:
+        login_date:
+          type: string
+          title: login date
+        device:
+          $ref: '#/components/schemas/UserDevice'
+    UserLoginHistory:
+      title: UserLoginHistory
+      type: array
+      items:
+        type: object
+        $ref: '#/components/schemas/UserLogin'
+    Role:
+      title: Role
+      properties:
+        id:
+          type: string
+          title: role uuid
+        code:
+          type: string
+          title: role name
+        description:
+          type: string
+          title: role detailed description
+      required:
+        - code
+        - description
+    UserRole:
+      title: UserRole
+      properties:
+        id:
+          type: string
+          title: user_role uuid
+        user_id:
+          type: string
+          title: user uuid
+        role_id:
+          type: string
+          title: role uuid
+    UserRoleRequest:
+      title: UserRoleRequest
+      properties:
+        user_id:
+          type: string
+          title: user uuid
+        role_ids:
+          type: array
+          items:
+            type: string
+            title: role uuids
+    UserRoleResponse:
+      title: UserRoleResponse
+      type: array
+      items:
+        type: object
+        $ref: '#/components/schemas/UserRole'
+
+securitySchemes:
+  jwt_auth:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT

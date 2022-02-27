@@ -1,0 +1,48 @@
+version: '3.9'
+
+services:
+  auth:
+    container_name: auth
+    image: auth:v2.0
+    build:
+      context: .
+      dockerfile: auth/docker/Dockerfile
+    env_file:
+      - ./envs/.auth.env
+    depends_on:
+      - db
+      - redis
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./envs/.db.env
+  redis:
+    container_name: redis
+    image: redis:6.2-alpine
+    restart: always
+    volumes:
+      - redis_data:/data
+  nginx:
+    container_name: nginx
+    image: nginx:1.21.6
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/configs:/etc/nginx/conf.d:ro
+    ports:
+      - 80:80
+    depends_on:
+      - auth
+  tests:
+    container_name: test_auth
+    image: auth:v2.0
+    env_file:
+      - ./envs/.auth.env
+    entrypoint: ["pytest", "tests/functional/src"]
+    depends_on:
+      - db
+      - redis
+volumes:
+  postgres_data:
+  redis_data:
