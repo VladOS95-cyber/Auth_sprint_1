@@ -1,21 +1,28 @@
-# Проектная работа 6 спринта
+## Auth API
 
-## API для сайта и личного кабинета
+## Description
 
-- регистрация пользователя;
-- вход пользователя в аккаунт (обмен логина и пароля на пару токенов: JWT-access токен и refresh токен); 
-- обновление access-токена;
-- выход пользователя из аккаунта;
-- изменение логина или пароля (с отправкой email вы познакомитесь в следующих модулях, поэтому пока ваш сервис должен позволять изменять личные данные без дополнительных подтверждений);
-- получение пользователем своей истории входов в аккаунт;
+API project to manipulate with web site authorization process and accounts. This project was developed using Flask framework.
 
-## API для управления доступами
+## Functionality
+- user registration;
+- user login to the account (exchanging login and password for a pair of tokens: JWT-access token and refresh token);
+- access token update;
+- user logout from the account;
+- changing your login or password
+- the user receives his account login history;
 
-- CRUD для управления ролями:
-  - создание роли,
-  - удаление роли,
-  - изменение роли,
-  - просмотр всех ролей.
-- назначить пользователю роль;
-- отобрать у пользователя роль;
-- метод для проверки наличия прав у пользователя. 
+## Instruction
+
+You have to install all requirements
+```
+pip install -r requirements.txt.
+```
+run containers
+```
+docker-compose up -d
+```
+
+Project author: Vladislav Bronzov
+
+Email: vladislav.bronzov@gmail.com
